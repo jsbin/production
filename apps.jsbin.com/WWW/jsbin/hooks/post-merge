@@ -1,0 +1,15 @@
+#!/bin/sh
+npm install
+echo -n 'rebuild jsbin.js? [Y/n] '
+read word < /dev/tty
+if [ "$word" = "" ] || [ "$word" = "y" ] || [ "$word" = "Y" ]; then
+  echo 'building public js'
+  grunt build
+fi
+echo -n 'restart jsbin? [Y/n] '
+read word < /dev/tty
+if [ "$word" = "" ] || [ "$word" = "y" ] || [ "$word" = "Y" ]; then
+  echo 'restarting forever'
+  forever restartall
+fi
+echo 'done'
