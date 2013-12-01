@@ -1,0 +1,46 @@
+{
+  "env": "production",
+  "url": {
+    "host": "jsbin.com",
+    "prefix": "/",
+    "ssl": false,
+    "static": "static.jsbin.com",
+    "runner": "http://run.jsbin.com"
+  },
+  "store": {
+    "adapter": "mysql",
+    "sqlite": {
+      "location": "/tmp/jsbin.db"
+    },
+    "mysql": {
+      "host": "db.jsbin.com",
+      "user": "<user>",
+      "password": "<password>",
+      "database": "jsbin",
+      "charset": "utf8mb4"
+    }
+  },
+  "server": {
+    "logger": "short"
+  },
+  "session": {
+    "secret": "<secret>"
+  },
+  "analytics": {
+    "id": "<id>",
+    "render-id": "<render-pages-id>"
+  },
+  "notify": {
+    "errors": ["<email>"],
+    "report": ["<email>"]
+  },
+  "blacklist": {
+    "html": [],
+    "css": [],
+    "javascript": []
+  },
+  "github": {
+    "id": "<id>",
+    "secret": "<secret>"
+  }
+}
