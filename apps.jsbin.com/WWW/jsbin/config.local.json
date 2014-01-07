@@ -17,7 +17,7 @@
       "user": "<user>",
       "password": "<password>",
       "database": "jsbin",
-      "charset": "utf8mb4"
+      "charset": "UTF8MB4_GENERAL_CI""
     }
   },
   "server": {
