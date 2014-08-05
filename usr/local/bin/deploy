@@ -1,0 +1,68 @@
+#!/bin/bash
+readonly ARGS="$@"
+
+clone_repo_at_tag() {
+  local repo="$1"
+  local tag="$2"
+  local project_name="$3"
+  local repo_dirname="$project_name-$tag"
+
+  echo ">>> cloning $tag..."
+  git clone --depth 1 -b $tag https://github.com/$repo.git $repo_dirname &> /dev/null
+  build $repo_dirname
+}
+
+diff_deps() {
+  local repo_dirname="$1"
+  diff -B <(cat jsbin/package.json | json dependencies) <(cat $repo_dirname/package.json | json dependencies)
+}
+
+build() {
+  local repo_dirname="$1"
+  local d=$(diff_deps $repo_dirname)
+
+  cd $repo_dirname
+
+  if [ -z "$d" ]; then
+    echo ">>> no change in packages, copying from v$(json -f ../jsbin/package.json version)..."
+    cp -R ../jsbin/node_modules .
+  else
+    echo ">>> installing fresh npm modules"
+    npm install &> /dev/null
+  fi
+
+  grunt build &> /dev/null
+}
+
+symlink_repo_to_name() {
+  local repodir="$1"
+  local project_name="$2"
+
+  echo ">>> symlinking $repodir"
+  ln -nfs $repodir $project_name
+}
+
+get_latest_tag() {
+  local repo="$1"
+  curl -s https://api.github.com/repos/$repo/tags | json 0.name
+}
+
+main() {
+  local cwd=$(pwd)
+  local args="$@"
+  local current_version=$(json -f jsbin/package.json version)
+  # read the arg first, or get it from the environment value
+  local repo=${1:-$REPO}
+  local tag=$(get_latest_tag $repo)
+  local project_name=$(echo $repo | awk -F'/' '{print $2}')
+
+  cd /WWW/
+  clone_repo_at_tag $repo $tag $project_name
+  cd $cwd
+
+  symlink_repo_to_name "$project_name-$tag" $project_name
+  echo ">>> deploy complete"
+  exit 0
+}
+
+main $ARGS
