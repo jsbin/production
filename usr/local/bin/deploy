@@ -53,13 +53,14 @@ get_latest_tag() {
 main() {
   local cwd=$(pwd)
   local args="$@"
+  
+  cd /WWW/
   local current_version=$(json -f jsbin/package.json version)
   # read the arg first, or get it from the environment value
   local repo=${1:-$REPO}
   local tag=$(get_latest_tag $repo)
   local project_name=$(echo $repo | awk -F'/' '{print $2}')
 
-  cd /WWW/
   clone_repo_at_tag $repo $tag $project_name
   cd $cwd
 
