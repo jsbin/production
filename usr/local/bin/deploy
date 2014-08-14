@@ -71,6 +71,8 @@ restart_jsbin() {
 }
 
 main() {
+  check_user
+
   local cwd=$(pwd)
   local args="$@"
 
