@@ -73,7 +73,7 @@ restart_jsbin() {
 main() {
   local cwd=$(pwd)
   local args="$@"
-  
+
   cd /WWW/
   local current_version=$(json -f jsbin/package.json version)
   # read the arg first, or get it from the environment value
