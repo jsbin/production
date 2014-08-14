@@ -87,5 +87,7 @@ main() {
   symlink_repo_to_name "$project_name-$tag" $project_name
   restart_jsbin
   echo ">>> deploy complete"
+  exit 0
 }
 
+main $ARGS
