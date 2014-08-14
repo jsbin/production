@@ -55,9 +55,7 @@ restart_jsbin() {
   sudo restart jsbin
 }
 
-main() {
-  check_user
-
+update_repo_and_symlinks() {
   local cwd=$(pwd)
   local args="$@"
 
@@ -72,8 +70,6 @@ main() {
   cd $cwd
 
   symlink_repo_to_name "$project_name-$tag" $project_name
-  restart_jsbin
-  echo ">>> deploy complete"
   exit 0
 }
 
