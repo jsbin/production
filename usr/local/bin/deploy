@@ -50,6 +50,21 @@ get_latest_tag() {
   curl -s https://api.github.com/repos/$repo/tags | json 0.name
 }
 
+check_user() {
+  if [ "$USER" != "www-data" ]
+  then
+    echo "*** launching deploy as www-data"
+    sudo -u www-data -- sh -c "/usr/local/bin/deploy $ARGS"
+    if [ $? -ne 0 ]
+    then
+      echo "*** deploy failed"
+      exit 1
+    else
+      exit 0
+    fi
+  fi
+}
+
 restart_jsbin() {
   echo ">>> restarting..."
   sudo restart jsbin
@@ -74,15 +89,3 @@ main() {
   echo ">>> deploy complete"
 }
 
-if [ "$USER" != "www-data" ]
-then
-  echo "*** launching deploy as www-data"
-  sudo -u www-data -- sh -c "/usr/local/bin/deploy $ARGS"
-  if [ $? -ne 0 ]; then
-    echo "*** deploy failed"
-    exit 1;
-  fi
-else
-  main $ARGS
-  echo "*** exiting from www-data"
-fi
