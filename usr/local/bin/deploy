@@ -70,7 +70,6 @@ update_repo_and_symlinks() {
   cd $cwd
 
   symlink_repo_to_name "$project_name-$tag" $project_name
-  exit 0
 }
 
 run_as_www() {
@@ -92,6 +91,7 @@ main() {
     exit 0
   else
     update_repo_and_symlinks
+    exit 0
   fi
 }
 
