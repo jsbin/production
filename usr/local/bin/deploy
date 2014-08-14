@@ -50,6 +50,11 @@ get_latest_tag() {
   curl -s https://api.github.com/repos/$repo/tags | json 0.name
 }
 
+restart_jsbin() {
+  echo ">>> restarting..."
+  sudo restart jsbin
+}
+
 main() {
   local cwd=$(pwd)
   local args="$@"
@@ -65,12 +70,8 @@ main() {
   cd $cwd
 
   symlink_repo_to_name "$project_name-$tag" $project_name
+  restart_jsbin
   echo ">>> deploy complete"
-}
-
-restart() {
-  echo ">>> restarting..."
-  sudo restart jsbin
 }
 
 if [ "$USER" != "www-data" ]
@@ -80,8 +81,6 @@ then
   if [ $? -ne 0 ]; then
     echo "*** deploy failed"
     exit 1;
-  else
-    restart
   fi
 else
   main $ARGS
