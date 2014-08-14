@@ -73,4 +73,26 @@ update_repo_and_symlinks() {
   exit 0
 }
 
+run_as_www() {
+  echo "*** launching deploy as www-data"
+  sudo -u www-data -- sh -c "/usr/local/bin/deploy $ARGS"
+  if [ $? -ne 0 ]
+  then
+    echo "*** deploy failed"
+    exit 1
+  fi
+}
+
+main() {
+  if [ "$USER" != "www-data" ]
+  then
+    run_as_www
+    restart_jsbin
+    echo ">>> deploy complete"
+    exit 0
+  else
+    update_repo_and_symlinks
+  fi
+}
+
 main $ARGS
