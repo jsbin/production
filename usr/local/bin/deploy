@@ -91,7 +91,7 @@ main() {
     echo ">>> deploy complete"
     exit 0
   else
-    update_repo_and_symlinks
+    update_repo_and_symlinks $ARGS
     exit 0
   fi
 }
