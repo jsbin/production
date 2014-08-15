@@ -72,7 +72,7 @@ symlink_repo_to_name() {
   local project_name="$2"
 
   echo ">>> symlinking $repodir"
-  ln -nfs $repodir $project_name
+  ln -nfs /WWW/$repodir /WWW/$project_name
 }
 
 get_latest_tag() {
