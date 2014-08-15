@@ -1,5 +1,6 @@
 #!/bin/bash
 readonly ARGS="$@"
+readonly DEPLOY_USER="www-data"
 
 clone_repo_at_tag() {
   local repo="$1"
@@ -72,9 +73,9 @@ update_repo_and_symlinks() {
   symlink_repo_to_name "$project_name-$tag" $project_name
 }
 
-run_as_www() {
-  echo "*** launching deploy as www-data"
-  sudo -u www-data -- sh -c "/usr/local/bin/deploy $ARGS"
+run_as_deploy_user() {
+  echo "*** launching deploy as $DEPLOY_USER"
+  sudo -u "$DEPLOY_USER" -- sh -c "$0 $ARGS"
   if [ $? -ne 0 ]
   then
     echo "*** deploy failed"
@@ -83,9 +84,9 @@ run_as_www() {
 }
 
 main() {
-  if [ "$USER" != "www-data" ]
+  if [ "$USER" != $DEPLOY_USER ]
   then
-    run_as_www
+    run_as_deploy_user
     restart_jsbin
     echo ">>> deploy complete"
     exit 0
