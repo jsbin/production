@@ -10,12 +10,23 @@ clone_repo_at_tag() {
 
   echo ">>> cloning $tag..."
   git clone --depth 1 -b $tag https://github.com/$repo.git $repo_dirname &> /dev/null
+  if [ $? -ne 0 ]
+  then
+    echo "*** clone failed"
+    exit 1
+  fi
   build $repo_dirname
 }
 
 diff_deps() {
+  echo ">>> diffing dependencies"
   local repo_dirname="$1"
   diff -B <(cat jsbin/package.json | json dependencies) <(cat $repo_dirname/package.json | json dependencies)
+  if [ $? -ne 0 ]
+  then
+    echo "*** package diff failed"
+    exit 1
+  fi
 }
 
 build() {
@@ -27,6 +38,12 @@ build() {
   echo ">>> copying node modules from v$(json -f ../jsbin/package.json version)..."
   cp -R ../jsbin/node_modules .
 
+  if [ $? -ne 0 ]
+  then
+    echo "*** copy previous version of modules failed"
+    exit 1
+  fi
+
   if [ -z "$d" ]; then
     echo ">>> no update required"
   else
@@ -34,8 +51,20 @@ build() {
     npm install &> /dev/null
   fi
 
+  if [ $? -ne 0 ]
+  then
+    echo "*** npm install failed"
+    exit 1
+  fi
+
   echo ">>> running build..."
   grunt build &> /dev/null
+
+  if [ $? -ne 0 ]
+  then
+    echo "*** grunt build failed"
+    exit 1
+  fi
 }
 
 symlink_repo_to_name() {
