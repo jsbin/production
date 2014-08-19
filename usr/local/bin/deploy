@@ -49,13 +49,14 @@ build() {
   else
     echo ">>> updating npm modules"
     npm install &> /dev/null
+
+    if [ $? -ne 0 ]
+    then
+      echo "*** npm install failed"
+      exit 1
+    fi
   fi
 
-  if [ $? -ne 0 ]
-  then
-    echo "*** npm install failed"
-    exit 1
-  fi
 
   echo ">>> running build..."
   grunt build &> /dev/null
@@ -104,7 +105,7 @@ update_repo_and_symlinks() {
 
 run_as_deploy_user() {
   echo "*** launching deploy as $DEPLOY_USER"
-  sudo -u "$DEPLOY_USER" -- sh -c "$0 $ARGS"
+  sudo -Hu "$DEPLOY_USER" -- sh -c "$0 $ARGS"
   if [ $? -ne 0 ]
   then
     echo "*** deploy failed"
